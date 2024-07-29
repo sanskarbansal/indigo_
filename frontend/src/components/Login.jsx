@@ -13,8 +13,9 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await login(email, password);
-            navigate("/");
+            const d = await login(email, password);
+            if (d.role === "admin") navigate("/admin");
+            else navigate("/");
         } catch (err) {
             alert("Failed to log in");
         }

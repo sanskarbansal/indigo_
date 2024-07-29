@@ -62,6 +62,7 @@ export const AuthProvider = ({ children }) => {
             setAuth({ loggedIn: true, token: response.data.token, role: response.data.role });
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("role", response.data.role);
+            return response.data;
         } catch (err) {
             console.error("Error logging in:", err);
         }
@@ -72,7 +73,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = async () => {
-        await axios.post(`/auth/logout`, {});
+        localStorage.removeItem("token");
         setAuth(false);
     };
 

@@ -4,6 +4,9 @@ import { AuthProvider } from "./AuthContext";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminHomePage from "./components/Admin/AdminHomePage";
+import CreateFlight from "./components/Admin/CreateFlight";
+import FlightList from "./components/Admin/FlightList";
 
 const App = () => (
     <AuthProvider>
@@ -20,6 +23,18 @@ const App = () => (
                         </ProtectedRoute>
                     }
                 />
+
+                <Route
+                    path="/admin"
+                    element={
+                        <ProtectedRoute roles={["admin"]}>
+                            <AdminHomePage />
+                        </ProtectedRoute>
+                    }
+                >
+                    <Route path="create-flight" element={<CreateFlight />} />
+                    <Route index element={<FlightList />} />
+                </Route>
             </Routes>
         </Router>
     </AuthProvider>
