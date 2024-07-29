@@ -9,6 +9,7 @@ import CreateFlight from "./components/Admin/CreateFlight";
 import FlightList from "./components/Admin/FlightList";
 import UserHomePage from "./components/User/HomePage";
 import Flights from "./components/User/Flights";
+import Notifications from "./components/User/Notifications";
 
 const App = () => (
     <AuthProvider>
@@ -25,7 +26,7 @@ const App = () => (
                         </ProtectedRoute>
                     }
                 >
-                    <Route path="/notifications" element={<h1>Notifications</h1>} />
+                    <Route path="/notifications" element={<Notifications />} />
                     <Route index element={<Flights />} />
                 </Route>
 

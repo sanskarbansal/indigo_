@@ -1,7 +1,19 @@
 /* eslint-disable react/prop-types */
+import { useState } from "react";
+import SendNotificationModal from "./SendNotificationModal";
 import "./FlightCard.css";
 
 const FlightCard = ({ flight, onEdit, onDelete }) => {
+    const [showModal, setShowModal] = useState(false);
+
+    const handleSendNotification = () => {
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     return (
         <div className="flight-card">
             <h3>{flight.flight_id}</h3>
@@ -36,7 +48,10 @@ const FlightCard = ({ flight, onEdit, onDelete }) => {
             <div className="card-buttons">
                 <button onClick={() => onEdit(flight)}>Edit</button>
                 <button onClick={() => onDelete(flight._id)}>Delete</button>
+                <button onClick={handleSendNotification}>Send Notification</button>
             </div>
+
+            {showModal && <SendNotificationModal flight={flight} onClose={handleCloseModal} />}
         </div>
     );
 };

@@ -17,10 +17,10 @@ const Navbar = () => {
             <div className="nav-links">
                 <Link to="/admin/create-flight">Create New Flight</Link>
                 <Link to="/admin">Fetch All Flights</Link>
-                <button className="logout-button" onClick={handleLogout}>
-                    Logout
-                </button>
             </div>
+            <button className="logout-button" onClick={handleLogout}>
+                Logout
+            </button>
         </nav>
     );
 };
