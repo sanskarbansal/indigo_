@@ -27,3 +27,7 @@
 .flight-card button:hover {
     background-color: #005bb5;
 }
+
+.unsubscribed.unsubscribed {
+    background-color: red;
+}

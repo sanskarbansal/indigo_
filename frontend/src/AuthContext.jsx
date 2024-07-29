@@ -1,6 +1,6 @@
 // src/AuthContext.js
 import { createContext, useState, useEffect } from "react";
-import axios, { updateToken } from "./axiosInstance";
+import axios from "./axiosInstance";
 
 export const AuthContext = createContext();
 
@@ -28,15 +28,11 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        updateToken(auth?.token);
-    }, [auth?.token]);
-
-    useEffect(() => {
         const checkAuth = async () => {
             try {
-                // updateToken()
-                const response = await axios.get("/auth/profile", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
-                setAuth({ loggedIn: true, token: response.data.token, role: response.data.role });
+                const token = localStorage.getItem("token");
+                const response = await axios.get("/auth/profile", { headers: { Authorization: `Bearer ${token}` } });
+                setAuth({ loggedIn: true, token: token, role: response.data.role });
                 localStorage.setItem("role", response.data.role);
             } catch (err) {
                 setAuth(null);

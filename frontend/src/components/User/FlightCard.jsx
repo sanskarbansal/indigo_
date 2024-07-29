@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import "./FlightCard.css";
 
-const FlightCard = ({ flight, onSubscribe, onUnsubscribe }) => (
+const FlightCard = ({ flight, isSubscribed, onSubscribe, onUnsubscribe }) => (
     <div className="flight-card">
         <h3>{flight.flight_id}</h3>
         <p>
@@ -22,8 +22,8 @@ const FlightCard = ({ flight, onSubscribe, onUnsubscribe }) => (
         <p>
             <b>Scheduled Arrival</b>: {new Date(flight.scheduled_arrival).toLocaleString()}
         </p>
-        <button onClick={() => (flight?.isSubscribed ? onUnsubscribe(flight._id) : onSubscribe(flight._id))}>
-            {flight?.isSubscribed ? "Unsubscribe" : "Subscribe"}
+        <button className={`${isSubscribed && "unsubscribed"}`} onClick={() => (isSubscribed ? onUnsubscribe(flight._id) : onSubscribe(flight._id))}>
+            {isSubscribed ? "Unsubscribe" : "Subscribe"}
         </button>
     </div>
 );
