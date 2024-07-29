@@ -48,4 +48,13 @@ const getUserSubscriptions = async (req, res) => {
     }
 };
 
-module.exports = { subscribeFlight, unsubscribeFlight, getUserSubscriptions };
+const getFlightUsers = async (req, res) => {
+    try {
+        const subscriptions = await Subscription.find({ flightId: req.params.flightId }).populate("userId", "email");
+        res.status(200).json(subscriptions.map((d) => d.userId));
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+
+module.exports = { subscribeFlight, unsubscribeFlight, getUserSubscriptions, getFlightUsers };
