@@ -1,4 +1,4 @@
-const Flight = require("../models/flightModel");
+const Flight = require("../models/flight.model");
 
 // Get all flights
 const getFlights = async (req, res) => {
@@ -53,7 +53,7 @@ const updateFlight = async (req, res) => {
 
     try {
         const updatedFlight = await Flight.findOneAndUpdate(
-            { flight_id: req.params.id },
+            { _id: req.params.id },
             {
                 airline,
                 status,
@@ -80,7 +80,7 @@ const updateFlight = async (req, res) => {
 // Delete a flight
 const deleteFlight = async (req, res) => {
     try {
-        const deletedFlight = await Flight.findOneAndDelete({ flight_id: req.params.id });
+        const deletedFlight = await Flight.findOneAndDelete({ _id: req.params.id });
         if (!deletedFlight) {
             return res.status(404).json({ message: "Flight not found" });
         }

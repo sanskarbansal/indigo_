@@ -3,13 +3,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
 
 const apiV1Router = require("./routes");
 const User = require("./models/user.model");
 
-// Load environment variables from .env file, where API keys and passwords are configured
-
-// Create Express server
 const app = express();
 
 app.use(cors());
@@ -34,8 +32,10 @@ const PORT = process.env.PORT || 5000;
 // Start the server
 app.listen(PORT, async () => {
     try {
-        await User.create({ email: "admin@indigo.in", role: "admin", password: "admin" });
-    } catch (err) {}
+        await User.create({ email: "admin@indigo.in", role: "admin", password: await bcrypt.hash("admin", 10) });
+    } catch (err) {
+        console.log(err);
+    }
     console.log(`Server running on port ${PORT}`);
 });
 
