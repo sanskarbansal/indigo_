@@ -7,6 +7,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminHomePage from "./components/Admin/AdminHomePage";
 import CreateFlight from "./components/Admin/CreateFlight";
 import FlightList from "./components/Admin/FlightList";
+import UserHomePage from "./components/User/HomePage";
+import Flights from "./components/User/Flights";
 
 const App = () => (
     <AuthProvider>
@@ -16,13 +18,16 @@ const App = () => (
                 <Route path="/login" element={<Login />} />
 
                 <Route
-                    index
+                    path=""
                     element={
                         <ProtectedRoute roles={["user"]}>
-                            <p>Home Page</p>
+                            <UserHomePage />
                         </ProtectedRoute>
                     }
-                />
+                >
+                    <Route path="/notifications" element={<h1>Notifications</h1>} />
+                    <Route index element={<Flights />} />
+                </Route>
 
                 <Route
                     path="/admin"
