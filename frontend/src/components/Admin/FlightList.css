@@ -1,6 +1,8 @@
 .flight-list {
     margin: 20px;
     font-family: Arial, sans-serif;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .flight-list h1 {
@@ -110,4 +112,15 @@
 .edit-flight form button.cancel {
     background-color: #f44336;
     margin-left: 10px;
+}
+
+@media (max-width: 1260px) {
+    .flight-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 960px) {
+    .flight-list {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }

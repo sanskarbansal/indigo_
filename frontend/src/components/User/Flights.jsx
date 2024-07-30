@@ -1,61 +1,48 @@
-import { useState, useEffect, useContext, useMemo } from "react";
-import io from "socket.io-client";
+import { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
-
-import axios from "../../axiosInstance";
 import FlightCard from "./FlightCard";
 import "./Flights.css";
 import { AuthContext } from "../../AuthContext";
-
-const socket = io("http://localhost:1337");
+import { useSocket } from "../../useState";
+import { fetchFlights, fetchSubscribedFlights, subscribeFlight, unSubscribeFlight } from "../../services/api";
 
 const Flights = () => {
     const [flights, setFlights] = useState([]);
     const [subscribedFlights, setSubscribedFlights] = useState([]);
     const { auth } = useContext(AuthContext);
-    const fetchFlights = useMemo(() => {
-        return async () => {
-            try {
-                const response = await axios.get("/flights");
-                setFlights(response.data);
-            } catch (error) {
-                console.error("Error fetching flights:", error);
-            }
-        };
-    }, []);
+    const socket = useSocket();
+
     useEffect(() => {
-        async function fetchSubscribedFlights() {
-            try {
-                const response = await axios.get("/user/subscriptions");
-                setSubscribedFlights(response.data.map((sub) => sub.flightId));
-            } catch (error) {
-                console.error("Error fetching subscribed flights:", error);
-            }
-        }
         if (auth?.token) {
-            fetchFlights();
-            fetchSubscribedFlights();
+            fetchFlights().then(setFlights);
+            fetchSubscribedFlights().then((data) => {
+                setSubscribedFlights(data.map((sub) => sub.flightId));
+            });
         }
-    }, [auth?.token, fetchFlights]);
+    }, [auth?.token]);
 
     useEffect(() => {
         // Subscribe to flight updates
-        socket.emit("flightUpdates");
+        if (socket) {
+            socket.on("connect", () => {
+                socket.emit("flightUpdates");
 
-        // Listen for flight status updates
-        socket.on("message", async ({ text }) => {
-            toast.info(text);
-            await fetchFlights();
-        });
+                // Listen for flight status updates
+                socket.on("message", async ({ text }) => {
+                    toast.info(text);
+                    fetchFlights().then(setFlights);
+                });
+            });
+        }
 
         return () => {
-            socket.off("message");
+            socket?.off("message");
         };
-    }, [fetchFlights]);
+    }, [socket]);
 
     const handleSubscribe = async (flightId) => {
         try {
-            await axios.post(`/user/subscribe/${flightId}`);
+            await subscribeFlight(flightId);
             setSubscribedFlights([...subscribedFlights, flightId]);
         } catch (error) {
             console.error("Error subscribing to flight:", error);
@@ -64,7 +51,7 @@ const Flights = () => {
 
     const handleUnsubscribe = async (flightId) => {
         try {
-            await axios.post(`/user/unsubscribe/${flightId}`);
+            await unSubscribeFlight(flightId);
             setSubscribedFlights(subscribedFlights.filter((sub) => flightId !== sub));
         } catch (error) {
             console.error("Error unsubscribing from flight:", error);

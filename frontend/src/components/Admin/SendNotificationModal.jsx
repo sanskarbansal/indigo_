@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from "react";
-import axios from "../../axiosInstance";
 import "./SendNotificationModal.css";
+import { createNotification, fetchRecipients } from "../../services/api";
 
 const SendNotificationModal = ({ flight, onClose }) => {
     const [method, setMethod] = useState("SMS");
@@ -11,24 +11,24 @@ const SendNotificationModal = ({ flight, onClose }) => {
     const [selectAll, setSelectAll] = useState(true);
 
     useEffect(() => {
-        const fetchRecipients = async () => {
+        const fetchData = async () => {
             try {
-                const response = await axios.get(`/user/subscriptions/${flight._id}`);
-                setRecipients(response.data);
-                setSelectedRecipients(response.data.map((r) => r._id));
+                const data = await fetchRecipients(flight._id);
+                setRecipients(data);
+                setSelectedRecipients(data.map((r) => r._id));
             } catch (error) {
                 console.error("Error fetching recipients:", error);
             }
         };
 
-        fetchRecipients();
+        fetchData();
     }, [flight._id]);
 
     const handleSelectAll = () => {
         setSelectAll(!selectAll);
         setSelectedRecipients(!selectAll ? recipients.map((r) => r._id) : []);
     };
-    console.log("Selected: ", selectedRecipients);
+
     const handleRecipientChange = (id) => {
         if (selectedRecipients.filter((r) => r === id).length === 1) {
             setSelectedRecipients(selectedRecipients.filter((r) => r !== id));
@@ -53,7 +53,7 @@ const SendNotificationModal = ({ flight, onClose }) => {
                 recipient: selectedRecipients,
             };
 
-            await axios.post("/notifications", notification);
+            await createNotification(notification);
             alert("Notification sent successfully");
             onClose();
         } catch (error) {

@@ -4,6 +4,8 @@
     justify-content: space-around;
     padding: 20px;
     background-color: #f0f0f0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .flight-card {
@@ -45,4 +47,15 @@
 
 .flight-card button:hover {
     background-color: #005bb5;
+}
+
+@media (max-width: 1260px) {
+    .flights {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 960px) {
+    .flights {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }

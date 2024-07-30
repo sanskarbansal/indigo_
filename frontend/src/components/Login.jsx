@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
@@ -39,6 +39,10 @@ const Login = () => {
                 </div>
 
                 <button type="submit">Login</button>
+                <p>
+                    Do not have a account ? <Link to="/register">Register</Link> here.
+                </p>
+                {/* <button type="submit">Login</button> */}
             </form>
         </div>
     );

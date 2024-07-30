@@ -3,21 +3,22 @@ import axios from "../../axiosInstance";
 import FlightCard from "./FlightCard";
 import EditFlightModal from "./EditFlightModal";
 import "./FlightList.css";
+import { fetchFlights } from "../../services/api";
 
 const FlightList = () => {
     const [flights, setFlights] = useState([]);
     const [editingFlight, setEditingFlight] = useState(null);
 
     useEffect(() => {
-        async function fetchFlights() {
+        async function fetchData() {
             try {
-                const { data } = await axios.get("/flights");
+                const data = await fetchFlights();
                 setFlights(data);
             } catch (error) {
                 alert("Error while fetching flights");
             }
         }
-        fetchFlights();
+        fetchData();
     }, []);
     const handleDelete = async (id) => {
         try {

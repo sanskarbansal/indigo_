@@ -1,22 +1,37 @@
 import { useState, useEffect } from "react";
-import axios from "../../axiosInstance";
 import "./Notifications.css";
+import { useSocket } from "../../useState";
+import { fetchNotifications, fetchSubscribedFlights } from "../../services/api";
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
+    const [subscribedFlights, setSubscribedFlights] = useState([]);
+    const socket = useSocket();
 
     useEffect(() => {
-        const fetchNotifications = async () => {
-            try {
-                const response = await axios.get("/notifications"); // Adjust this endpoint as per your backend
-                setNotifications(response.data);
-            } catch (error) {
-                console.error("Error fetching notifications:", error);
-            }
-        };
-
-        fetchNotifications();
+        fetchNotifications().then(setNotifications);
+        fetchSubscribedFlights().then((data) => {
+            setSubscribedFlights(data?.map((sub) => sub.flightId));
+        });
     }, []);
+    useEffect(() => {
+        if (socket) {
+            // socket.on("connect", () => {
+            console.log("Called", subscribedFlights);
+            subscribedFlights.forEach((flightId) => {
+                socket.emit("joinFlightRoom", { flightId });
+            });
+            socket.on("notification", (notification) => {
+                console.log(notification);
+                setNotifications([notification, ...notifications]);
+            });
+            // });
+        }
+
+        return () => {
+            socket?.off("notification");
+        };
+    }, [notifications, socket, subscribedFlights]);
 
     return (
         <div className="notifications-container">

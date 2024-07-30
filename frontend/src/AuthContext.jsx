@@ -1,6 +1,7 @@
 // src/AuthContext.js
 import { createContext, useState, useEffect } from "react";
 import axios from "./axiosInstance";
+import { loginUser, registerUser } from "./services/api";
 
 export const AuthContext = createContext();
 
@@ -11,21 +12,6 @@ export const AuthProvider = ({ children }) => {
         const role = localStorage.getItem("role");
         return token ? { loggedIn: true, token, role } : null;
     });
-
-    const [flights, setFlights] = useState([]);
-
-    useEffect(() => {
-        const fetchFlights = async () => {
-            try {
-                const response = await axios.get(`/flights`);
-                setFlights(response.data);
-            } catch (err) {
-                console.error("Error fetching posts:", err);
-            }
-        };
-
-        fetchFlights();
-    }, []);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -43,29 +29,21 @@ export const AuthProvider = ({ children }) => {
 
         checkAuth();
     }, []);
-    const createFlight = async (data) => {
-        try {
-            const response = await axios.post("/flights", data);
-            setFlights([...flights, response.data]);
-        } catch (err) {
-            console.error("Error creating post:", err);
-        }
-    };
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post("/auth/login", { email, password });
-            setAuth({ loggedIn: true, token: response.data.token, role: response.data.role });
-            localStorage.setItem("token", response.data.token);
-            localStorage.setItem("role", response.data.role);
-            return response.data;
+            const data = await loginUser(email, password);
+            setAuth({ loggedIn: true, token: data.token, role: data.role });
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("role", data.role);
+            return data;
         } catch (err) {
             console.error("Error logging in:", err);
         }
     };
 
-    const register = async (email, password, role) => {
-        await axios.post(`/auth/register`, { email, password, role });
+    const register = async (email, phone, password) => {
+        registerUser(email, phone, password);
     };
 
     const logout = async () => {
@@ -73,5 +51,5 @@ export const AuthProvider = ({ children }) => {
         setAuth(false);
     };
 
-    return <AuthContext.Provider value={{ auth, setAuth, login, register, logout, createFlight, flights }}>{children}</AuthContext.Provider>;
+    return <AuthContext.Provider value={{ auth, setAuth, login, register, logout }}>{children}</AuthContext.Provider>;
 };

@@ -18,6 +18,7 @@ import Notifications from "./components/User/Notifications";
 const App = () => (
     <>
         <ToastContainer autoClose={false} />
+
         <AuthProvider>
             <Router>
                 <Routes>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "../../axiosInstance";
 import "./CreateFlight.css";
+import { createNewFlight } from "../../services/api";
 
 const CreateFlight = () => {
     const [newFlight, setNewFlight] = useState({
@@ -26,7 +27,7 @@ const CreateFlight = () => {
     const handleCreateFlight = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("/flights", newFlight);
+            await createNewFlight(newFlight);
             setNewFlight({
                 flight_id: "",
                 airline: "",
