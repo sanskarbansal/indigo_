@@ -55,9 +55,7 @@ Ensure you have the following installed:
     npm run dev
     ```
 
-`Note:` Admin Credentials: 
-**Email:** `admin@indigo.in`
-**Password:** `admin`
+`Note: Admin Credentials Email: admin@indigo.in, Password: admin`
 
 ### Environment Variables
 A sample `.env` file is provided in the `backend` directory as `.env.sample`. Create a `.env` file in the `backend` directory and add the necessary credentials and configurations based on the sample file. Below is an example of what might be needed:
