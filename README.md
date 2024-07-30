@@ -18,6 +18,8 @@ Ensure you have the following installed:
 - Node.js
 - npm (Node Package Manager)
 - MongoDB
+- Apache Kafka
+- Zookeeper
 
 ### Installation
 
