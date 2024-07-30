@@ -16,7 +16,12 @@ const initSocket = (server) => {
 
         // Handle subscription to flights
         socket.on("flightUpdates", () => {
+            console.log("Flight Updates Called");
             socket.join("flightUpdates");
+        });
+        socket.on("joinFlightRoom", ({ flightId }) => {
+            console.log("Join Flight Room");
+            socket.join(`notification-${flightId}`);
         });
 
         // Handle disconnection
@@ -58,8 +63,14 @@ async function sendFlightUpdate({ status, currentFlight, updatedFlight }) {
     }
 }
 
+async function sendNotificationIO(flightId, notification) {
+    console.log(notification);
+    io?.to(`notification-${flightId}`).emit("notification", { _id: flightId, ...notification });
+}
+
 module.exports = {
     initSocket,
     getIo,
     sendFlightUpdate,
+    sendNotificationIO,
 };

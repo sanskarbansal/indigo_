@@ -17,10 +17,10 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-    const { email, password, role } = req.body;
+    const { email, phone, password, role } = req.body;
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ email, password: hashedPassword, role });
+        const user = new User({ email, phone, password: hashedPassword, role });
         await user.save();
         res.status(201).send("User registered");
     } catch (err) {

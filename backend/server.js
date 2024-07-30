@@ -9,13 +9,15 @@ const http = require("http");
 const apiV1Router = require("./routes");
 const User = require("./models/user.model");
 const { initSocket } = require("./services/socket.service");
+const createKafkaTopic = require("./utils/createKafkaTopic"); // Adjust the path as needed
+const Flight = require("./models/flight.model");
 
 const app = express();
 
 const server = http.createServer(app);
 
-app.use(cors());
 initSocket(server);
+app.use(cors());
 // Connect to MongoDB
 mongoose
     .connect(process.env.MONGODB_URI, {
@@ -35,9 +37,19 @@ app.use("/api", apiV1Router);
 const PORT = process.env.PORT || 5000;
 
 // Start the server
+const initializeKafka = async () => {
+    try {
+        await createKafkaTopic("notifications");
+        console.log("Kafka topic initialized");
+    } catch (error) {
+        console.error("Error initializing Kafka topic:", error);
+    }
+};
+
 server.listen(PORT, async () => {
     try {
-        await User.create({ email: "admin@indigo.in", role: "admin", password: await bcrypt.hash("admin", 10) });
+        await initializeKafka();
+        await User.create({ email: "admin@indigo.in", phone: "+918059976629", role: "admin", password: await bcrypt.hash("admin", 10) });
     } catch (err) {
         console.log(err);
     }
