@@ -4,13 +4,18 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
 const bcrypt = require("bcryptjs");
+const http = require("http");
 
 const apiV1Router = require("./routes");
 const User = require("./models/user.model");
+const { initSocket } = require("./services/socket.service");
 
 const app = express();
 
+const server = http.createServer(app);
+
 app.use(cors());
+initSocket(server);
 // Connect to MongoDB
 mongoose
     .connect(process.env.MONGODB_URI, {
@@ -30,7 +35,7 @@ app.use("/api", apiV1Router);
 const PORT = process.env.PORT || 5000;
 
 // Start the server
-app.listen(PORT, async () => {
+server.listen(PORT, async () => {
     try {
         await User.create({ email: "admin@indigo.in", role: "admin", password: await bcrypt.hash("admin", 10) });
     } catch (err) {

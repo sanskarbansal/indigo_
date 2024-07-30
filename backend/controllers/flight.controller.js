@@ -1,4 +1,5 @@
 const Flight = require("../models/flight.model");
+const { sendFlightUpdate } = require("../services/socket.service");
 
 // Get all flights
 const getFlights = async (req, res) => {
@@ -52,6 +53,14 @@ const updateFlight = async (req, res) => {
     const { airline, status, departure_gate, arrival_gate, scheduled_departure, scheduled_arrival, actual_departure, actual_arrival } = req.body;
 
     try {
+        // Fetch the current flight document before updating
+        const currentFlight = await Flight.findById(req.params.id);
+
+        if (!currentFlight) {
+            return res.status(404).json({ message: "Flight not found" });
+        }
+
+        // Update the flight document
         const updatedFlight = await Flight.findOneAndUpdate(
             { _id: req.params.id },
             {
@@ -71,6 +80,7 @@ const updateFlight = async (req, res) => {
             return res.status(404).json({ message: "Flight not found" });
         }
 
+        sendFlightUpdate({ updatedFlight, currentFlight, status });
         res.status(200).json(updatedFlight);
     } catch (error) {
         res.status(500).json({ message: "Error updating flight", error });

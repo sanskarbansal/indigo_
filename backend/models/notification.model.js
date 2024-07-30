@@ -6,7 +6,7 @@ const NotificationSchema = new Schema(
     {
         flight_id: { type: mongoose.Schema.Types.ObjectId, ref: "Flight", required: true },
         message: { type: String, required: true },
-        method: { type: String, required: true, enum: ["Email", "SMS", "App"] },
+        method: { type: String, required: true, enum: ["Email", "SMS", "App", "All"] },
         recipient: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     },
     { timestamps: true }
